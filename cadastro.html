@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Piano Virtual</title>
+    <link rel="stylesheet" href="styles.css"> 
+    <link rel="stylesheet" href="cadastro.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="registration-container">
+        <div class="registration-card">
+            <h2>Cadastre-se</h2>
+            <form id="registrationForm">
+                
+                <div class="profile-picture-upload">
+                <div class="profile-pic-preview" id="profilePicPreview">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+                <button type="button" id="selectProfilePicBtn" class="upload-btn">Escolher Foto</button>
+            </div>
+            
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="regName" placeholder="Nome Completo" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPassword" placeholder="Senha" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regConfirmPassword" placeholder="Confirmar Senha" required>
+                </div>
+                
+                <p id="regError" class="error-message" style="display: none;"></p>
+                <p id="regSuccess" class="success-message" style="display: none;"></p>
+
+                <button type="submit" id="registerBtn">Criar Conta</button>
+            </form>
+            
+            <p class="login-link">
+                Já tem uma conta? <a href="index.html#loginModal">Faça Login</a>
+            </p>
+        </div>
+    </div>
+    
+    <script src="cadastro.js"></script>
+</body>
+</html>

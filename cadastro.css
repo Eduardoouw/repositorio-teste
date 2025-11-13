@@ -1,0 +1,168 @@
+/* Estilos específicos para a página de cadastro */
+
+body {
+    /* Garante que o fundo do styles.css seja usado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Estilos para a seção de upload de foto de perfil */
+.profile-picture-upload {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.profile-pic-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #34495e; /* Fundo do input-group */
+    border: 3px solid #3498db; /* Borda de destaque */
+    margin: 0 auto 15px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Garante que a imagem não vaze */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.profile-pic-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem preencha o círculo */
+}
+
+.profile-pic-preview i {
+    font-size: 3em;
+    color: #95a5a6;
+}
+
+.upload-btn {
+    background: #3498db; /* Cor do link */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.upload-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.registration-container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.registration-card {
+    background: rgba(44, 62, 80, 0.95); /* Cor escura do sidebar */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.registration-card h2 {
+    color: #ecf0f1;
+    margin-bottom: 25px;
+    font-size: 2em;
+    text-transform: uppercase;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: #34495e;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 10px;
+    transition: box-shadow 0.3s;
+}
+
+.input-group:focus-within {
+    box-shadow: 0 0 15px #3498db;
+}
+
+.input-group i {
+    color: #95a5a6;
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.registration-card input[type="text"],
+.registration-card input[type="email"],
+.registration-card input[type="password"] {
+    flex-grow: 1;
+    padding: 10px 0;
+    border: none;
+    background: none;
+    color: white;
+    font-size: 1em;
+    outline: none;
+}
+
+.registration-card input::placeholder {
+    color: #bdc3c7;
+    opacity: 0.8;
+}
+
+.registration-card button {
+    width: 100%;
+    padding: 15px;
+    background: #2ecc71; /* Cor de sucesso/ação */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.registration-card button:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+.error-message {
+    color: #e74c3c; /* Cor de erro */
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.success-message {
+    color: #2ecc71; /* Cor de sucesso */
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.login-link {
+    margin-top: 20px;
+    font-size: 0.95em;
+    color: #bdc3c7;
+}
+
+.login-link a {
+    color: #3498db; /* Cor do link */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.login-link a:hover {
+    color: #5dade2;
+    text-decoration: underline;
+}
