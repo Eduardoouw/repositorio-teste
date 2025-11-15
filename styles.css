@@ -8,24 +8,24 @@
 body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Altera para o topo para acomodar os controles */
     align-items: center;
     height: 100vh;
-    margin: 0;
+    padding-top: 20px; /* Espaço para os controles */
     background: linear-gradient(to bottom, #1e1e1e, #333);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: white;
-    overflow: hidden; /* Mantém o foco no piano */
-    background-image: url(Partitura.jpg);
+    overflow: hidden; 
+    background-image: url(Partitura.jpg); 
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
-/* --- ELEMENTOS DO PIANO --- */
+/* --- ELEMENTOS DE DISPLAY E CONTROLES --- */
 
 .note-display {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.5em;
     font-weight: bold;
     background: rgba(0, 0, 0, 0.4);
@@ -37,77 +37,114 @@ body {
 #current-note { color: #00ccff; margin-right: 10px; }
 #current-frequency { color: #fff; }
 
-/* --- CONTROLES DE GRAVAÇÃO E MÚSICA --- */
-.controls-container, .music-selector {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.controls-container button,
-.music-selector button,
-.music-selector select {
-    padding: 10px 20px;
-    font-size: 1em;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    color: white;
-    height: 40px; 
-}
-
-.action-button { background-color: #3498db; }
-.action-button:hover { background-color: #2980b9; transform: translateY(-1px); }
-button:disabled { background-color: #555 !important; cursor: not-allowed; opacity: 0.7; }
-
-#recordButton { background-color: #e74c3c; }
-#recordButton.recording { background-color: #c0392b; animation: pulse 1s infinite; }
-#playButton { background-color: #f39c12; }
-#downloadButton { background-color: #3498db; }
-#clearSequence { background-color: #7f8c8d; }
-#playMusicButton { background-color: #2ecc71; }
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
-    70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
-}
-
-/* --- PIANO CONTROLES INFERIORES --- */
-.piano-controls-bottom {
+.controls-container {
     display: flex;
     gap: 30px;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: rgba(17, 17, 17, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
-.octave-control, .volume-control {
+.music-selector, .sequence-controls {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 8px 15px;
-    border-radius: 8px;
 }
 
-.octave-control select {
-    padding: 5px;
+#musicSelect {
+    padding: 8px 15px;
     border-radius: 5px;
-    border: 1px solid #777;
+    border: 1px solid #555;
     background: #333;
     color: white;
+    font-size: 1em;
+    cursor: pointer;
 }
 
-.volume-control input[type="range"] {
-    width: 120px;
-    cursor: grab;
+.action-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* --- PIANO TECLAS --- */
+.action-button i {
+    font-size: 1.1em;
+}
+
+/* Estilos específicos para os botões de ação */
+#recordButton {
+    background: #e74c3c; /* Vermelho */
+    color: white;
+}
+#recordButton:hover { background-color: #c0392b; }
+#recordButton.recording {
+    background-color: #c0392b;
+    box-shadow: 0 0 10px #e74c3c;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.05); opacity: 0.8; }
+}
+
+#playSequenceButton, #playMusicButton {
+    background: #2ecc71; /* Verde */
+    color: white;
+}
+#playSequenceButton:hover, #playMusicButton:hover { background-color: #27ae60; }
+#playSequenceButton:active, #playMusicButton:active { transform: translateY(1px); }
+
+/* --- LEITOR DE SEQUÊNCIA --- */
+.sequence-reader {
+    width: 1000px; 
+    height: 30px;
+    margin-bottom: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative;
+    border: 1px solid #444;
+}
+
+.sequence-track {
+    display: inline-flex;
+    height: 100%;
+}
+
+.sequence-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    min-width: 30px;
+    height: 100%;
+    font-size: 0.8em;
+    color: #ecf0f1;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: transparent;
+    transition: background-color 0.1s;
+}
+
+.sequence-item.active {
+    background-color: rgba(52, 152, 219, 0.7); /* Azul */
+    color: white;
+    font-weight: bold;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+
+/* --- PIANO TECLAS (Mantidos) --- */
 .piano-container {
     width: 1350px;
     padding: 20px;
@@ -120,7 +157,7 @@ button:disabled { background-color: #555 !important; cursor: not-allowed; opacit
 
 .piano {
     position: relative;
-    width: 1296px; /* 36 teclas brancas * 36px */
+    width: 1296px; 
     height: 180px;
     overflow: visible;
 }
@@ -177,46 +214,3 @@ button:disabled { background-color: #555 !important; cursor: not-allowed; opacit
 }
 
 .note-label { position: absolute; bottom: 5px; }
-
-/* --- LEITOR DE SEQUÊNCIA (Sequencer) --- */
-.sequence-reader {
-    width: 800px;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 20px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    border: 2px solid #2ecc71;
-}
-
-.sequence-track {
-    display: flex;
-    transition: transform 0.2s ease-out;
-}
-
-.sequence-item {
-    padding: 5px 10px;
-    margin: 2px;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 1.0em;
-    min-width: 38px;
-    height: 34px;
-    line-height: 24px;
-    text-align: center;
-    transition: all 0.25s ease;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-    flex-shrink: 0;
-}
-
-.sequence-item.white { background: #00ccff; color: #111; }
-.sequence-item.black { background: #9c27b0; color: white; }
-.sequence-item.chord { background: #4caf50; color: white; }
-
-.sequence-item.playing {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 204, 255, 0.9);
-    z-index: 10;
-}
