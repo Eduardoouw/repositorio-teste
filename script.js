@@ -10,7 +10,7 @@ const globalVolume = 0.7; // Volume fixo (70%)
 const currentOctaveShift = 0; // Oitava fixa
 
 // === LÓGICA DE SEQUÊNCIA E GRAVAÇÃO (REATIVADA) ===
-let currentSequence = []; // Armazena a sequência gravada (ex: [{note: 'C4', duration: 300}, ...])
+let currentSequence = []; 
 let recording = false;
 let startTime = null;
 let playbackTimeout = null;
@@ -85,84 +85,77 @@ function loadBaseNote() {
         .then(audioBuffer => {
             baseNoteBuffer = audioBuffer;
             console.log("Som base carregado com sucesso!");
-            renderPiano(); 
-            setupMusicControls(); // Adiciona o setup de controles de música
             return audioBuffer;
         })
         .catch(error => {
             console.error("Falha ao carregar som:", error);
-            alert("Erro crítico: não foi possível carregar o som do piano. Verifique o caminho para 'sons/69.ogg'.");
+            alert("Erro crítico: não foi possível carregar o som do piano. Verifique o caminho para 'sons/69.ogg'. O piano visual será exibido.");
         });
 }
 
 const activeSources = {}; 
 
 function playNote(note, keyElement, recordDuration = false) {
-    if (!baseNoteBuffer || !context) return;
-    
-    if (activeSources[note]) return;
-
-    const now = context.currentTime;
-    const targetFrequency = getFrequency(note);
-    if (!targetFrequency) return;
-    
-    // Pitch Shift
-    const playbackRate = targetFrequency / baseNoteFrequency;
-    const duration = 1.5; 
-    const endTime = now + duration;
-    
-    const source = context.createBufferSource();
-    source.buffer = baseNoteBuffer;
-    source.playbackRate.setValueAtTime(playbackRate, now);
-    
-    const gainNode = context.createGain();
-    
-    // Lógica de Volume Fixo (Controle removido, valor globalVolume usado)
-    let startVolume = globalVolume; 
-    const boostMultiplier = 0.3; 
-    
-    if (playbackRate > 1.0) {
-        const boost = (playbackRate - 1.0) * boostMultiplier;
-        startVolume = globalVolume * (1.0 + boost);
-    } else if (playbackRate < 1.0) {
-        const boost = (1.0 - playbackRate) * boostMultiplier;
-        startVolume = globalVolume * (1.0 + boost);
+    if (!baseNoteBuffer || !context) {
+        // Se o buffer não carregou, não toca o som, mas continua a gravação/display
+        if (!keyElement) return; // Evita erro se for uma nota tocada por software sem elemento
     }
-    if (startVolume > 1.2) startVolume = 1.2; 
-
-    gainNode.gain.setValueAtTime(startVolume, now);
-    // Encerra a nota suavemente
-    gainNode.gain.linearRampToValueAtTime(0.0, endTime);
     
-    source.connect(gainNode).connect(context.destination);
-    
-    source.start(now);
-    source.stop(endTime);
-    
-    activeSources[note] = source;
-
-    source.onended = () => {
-        delete activeSources[note];
-        if (keyElement) {
-            keyElement.classList.remove('active');
-        }
-    };
-    
-    updateDisplay(note, targetFrequency.toFixed(2));
-    
+    // Se o contexto está nulo, a nota visual ainda deve aparecer.
     if (keyElement) {
+        if (activeSources[note]) return;
         keyElement.classList.add('active');
+    }
+
+    const targetFrequency = getFrequency(note);
+    updateDisplay(note, targetFrequency ? targetFrequency.toFixed(2) : "0.00");
+    
+    if (baseNoteBuffer && context) {
+        const now = context.currentTime;
+        if (!targetFrequency) return;
+        
+        const playbackRate = targetFrequency / baseNoteFrequency;
+        const duration = 1.5; 
+        const endTime = now + duration;
+        
+        const source = context.createBufferSource();
+        source.buffer = baseNoteBuffer;
+        source.playbackRate.setValueAtTime(playbackRate, now);
+        
+        const gainNode = context.createGain();
+        let startVolume = globalVolume; 
+        const boostMultiplier = 0.3; 
+        
+        // Lógica de volume
+        if (playbackRate > 1.0) startVolume = globalVolume * (1.0 + (playbackRate - 1.0) * boostMultiplier);
+        else if (playbackRate < 1.0) startVolume = globalVolume * (1.0 + (1.0 - playbackRate) * boostMultiplier);
+        if (startVolume > 1.2) startVolume = 1.2; 
+
+        gainNode.gain.setValueAtTime(startVolume, now);
+        gainNode.gain.linearRampToValueAtTime(0.0, endTime);
+        
+        source.connect(gainNode).connect(context.destination);
+        source.start(now);
+        source.stop(endTime);
+        
+        activeSources[note] = source;
+
+        source.onended = () => {
+            delete activeSources[note];
+            if (keyElement) keyElement.classList.remove('active');
+        };
     }
     
     // === LÓGICA DE GRAVAÇÃO (REATIVADA) ===
     if (recording) {
-        const elapsed = Date.now() - startTime;
-        startTime = Date.now();
+        const now = Date.now();
+        const elapsed = startTime ? now - startTime : 0;
+        startTime = now;
         
         currentSequence.push({
             note: note,
             duration: elapsed,
-            key: keyElement ? keyElement.dataset.keychar : null // Adiciona o caractere da tecla para destaque
+            key: keyElement ? keyElement.dataset.keychar : null
         });
         updateSequenceReader(note, elapsed, true);
     }
@@ -182,11 +175,9 @@ function handleKeyDown(key, isShift) {
     let note;
     let keyToPlay = key.toLowerCase();
 
-    // 1. Tenta encontrar a nota preta (SHIFT + Tecla)
     if (isShift && blackKeyMap[key.toUpperCase()]) {
         note = blackKeyMap[key.toUpperCase()];
     } 
-    // 2. Tenta encontrar a nota branca
     else if (keyMap[keyToPlay]) {
         note = keyMap[keyToPlay];
     }
@@ -205,7 +196,7 @@ function handleKeyUp(key) {
     
     let note = keyMap[keyToPlay] || blackKeyMap[key.toUpperCase()];
     if (!note) return;
-    
+
     const keyElement = document.querySelector(`[data-note="${note}"]`);
     
     delete pressedKeys[key];
@@ -213,19 +204,17 @@ function handleKeyUp(key) {
     stopNote(note, keyElement);
 }
 
-// === RENDERIZAÇÃO E CONTROLES DE MÚSICA ===
+// === RENDERIZAÇÃO DO PIANO (DOM) ===
 
 function renderPiano() {
     const piano = document.getElementById('piano');
     if (!piano) return;
     
-    // ... (Mantida a lógica de renderização de teclas)
-    
     piano.innerHTML = ''; 
     
     const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     let whiteIndex = 0;
-    const maxWhiteKeys = 36; // C1 até F6 (aprox 5 oitavas visuais)
+    const maxWhiteKeys = 36; // 36 teclas brancas
 
     for (let octave = 1; octave <= 6; octave++) {
         for (let i = 0; i < notes.length; i++) {
@@ -244,7 +233,7 @@ function renderPiano() {
                 const keyChar = noteToKeyMap[note];
                 if (keyChar) {
                     noteLabel.textContent = keyChar.toUpperCase();
-                    key.dataset.keychar = keyChar.toUpperCase(); // Adiciona o char para gravação
+                    key.dataset.keychar = keyChar.toUpperCase(); 
                 } else {
                     noteLabel.textContent = note;
                 }
@@ -252,10 +241,13 @@ function renderPiano() {
                 key.appendChild(noteLabel);
                 piano.appendChild(key);
                 whiteIndex++;
-            } else if (!isWhite) {
+            } 
+            else if (!isWhite) {
                 const blackKeyIndex = [1, 3, 6, 8, 10].indexOf(i); 
                 
-                if (blackKeyIndex !== -1 && noteToKeyMap[note]) {
+                // CORREÇÃO VISUAL: Renderiza se for uma tecla preta válida (C#, D#, F#, G#, A#) e estiver dentro do limite visual.
+                if (blackKeyIndex !== -1 && whiteIndex <= maxWhiteKeys) { 
+                    
                     const key = document.createElement('div');
                     key.className = 'key black-key';
                     key.dataset.note = note;
@@ -265,11 +257,17 @@ function renderPiano() {
                          
                     const noteLabel = document.createElement('span');
                     noteLabel.className = 'note-label';
+                    
                     const keyChar = noteToKeyMap[note];
-                    noteLabel.textContent = keyChar.toUpperCase(); 
-                    key.dataset.keychar = keyChar.toUpperCase(); // Adiciona o char para gravação
+                    
+                    if (keyChar) {
+                        noteLabel.textContent = keyChar.toUpperCase(); 
+                        key.dataset.keychar = keyChar.toUpperCase();
+                    } else {
+                        noteLabel.textContent = note; 
+                    }
+                    
                     key.appendChild(noteLabel);
-                        
                     piano.appendChild(key);
                 }
             }
@@ -303,6 +301,92 @@ function renderPiano() {
     });
 }
 
+// === FUNÇÕES DE REPRODUÇÃO ===
+
+function playSequence(sequence) {
+    // ... (Mantida a lógica de playSequence) ...
+    if (playbackTimeout) {
+        clearTimeout(playbackTimeout);
+        playbackIndex = 0;
+    }
+    
+    const sequenceTrack = document.getElementById('sequenceTrack');
+    sequenceTrack.innerHTML = '';
+    
+    sequence.forEach(item => {
+        updateSequenceReader(item.note, item.duration, false);
+    });
+
+    playbackIndex = 0;
+
+    function playNextNote() {
+        if (playbackIndex >= sequence.length) {
+            document.querySelectorAll('.sequence-item').forEach(item => item.classList.remove('active'));
+            playbackTimeout = null;
+            return;
+        }
+
+        const item = sequence[playbackIndex];
+        const delay = item.duration;
+
+        const prevItem = sequenceTrack.children[playbackIndex - 1];
+        if (prevItem) {
+            prevItem.classList.remove('active');
+        }
+
+        const currentItemElement = sequenceTrack.children[playbackIndex];
+        if (currentItemElement) {
+            currentItemElement.classList.add('active');
+            const reader = document.getElementById('sequenceReader');
+            // Scroll para centralizar a nota
+            reader.scrollLeft = currentItemElement.offsetLeft - reader.clientWidth / 2 + currentItemElement.clientWidth / 2;
+        }
+
+        if (item.note !== '---') {
+             const keyElement = document.querySelector(`[data-note="${item.note}"]`);
+             if (keyElement) { keyElement.classList.add('active'); }
+             // playNote cuida de tocar o som e remover o destaque (via onended)
+             playNote(item.note, keyElement); 
+        }
+        
+        playbackIndex++;
+        playbackTimeout = setTimeout(playNextNote, delay);
+    }
+    
+    playNextNote();
+}
+
+function updateDisplay(note, frequency = "0.00") {
+    document.getElementById('current-note').textContent = note;
+    document.getElementById('current-frequency').textContent = frequency + ' Hz';
+}
+
+function updateSequenceReader(note, duration, clearBefore = false) {
+    const sequenceTrack = document.getElementById('sequenceTrack');
+    
+    if (clearBefore && sequenceTrack.children.length === 0) {
+        sequenceTrack.innerHTML = '';
+    }
+
+    const item = document.createElement('div');
+    item.className = 'sequence-item';
+    item.textContent = `${note}`;
+    item.title = `Duração: ${duration}ms`;
+    
+    const minWidth = 30;
+    const width = Math.max(minWidth, duration / 10); 
+    item.style.width = `${width}px`;
+
+    sequenceTrack.appendChild(item);
+    
+    if (recording) {
+        const reader = document.getElementById('sequenceReader');
+        reader.scrollLeft = reader.scrollWidth;
+    }
+}
+
+// === HANDLERS DE EVENTOS DE CONTROLES ===
+
 function setupMusicControls() {
     const recordButton = document.getElementById('recordButton');
     const playSequenceButton = document.getElementById('playSequenceButton');
@@ -319,6 +403,11 @@ function setupMusicControls() {
 
     // 2. Listener de Gravação
     recordButton.addEventListener('click', () => {
+        if (!context) {
+             alert("Aguarde o carregamento do som ou verifique o caminho do arquivo 'sons/69.ogg'.");
+             return;
+        }
+
         if (!recording) {
             // Inicia a gravação
             recording = true;
@@ -326,7 +415,6 @@ function setupMusicControls() {
             startTime = Date.now();
             recordButton.classList.add('recording');
             recordButton.innerHTML = '<i class="fas fa-stop"></i> Parar';
-            // Adiciona um placeholder de duração inicial (0ms)
             currentSequence.push({ note: '---', duration: 0 }); 
             updateSequenceReader('---', 0, true);
             
@@ -335,7 +423,6 @@ function setupMusicControls() {
             recording = false;
             recordButton.classList.remove('recording');
             recordButton.innerHTML = '<i class="fas fa-circle"></i> Gravar';
-            // Remove o placeholder inicial se a sequência tiver notas válidas
             if (currentSequence.length > 1 && currentSequence[0].note === '---') {
                 currentSequence.shift();
             }
@@ -344,6 +431,10 @@ function setupMusicControls() {
 
     // 3. Listener de Tocar Sequência Gravada
     playSequenceButton.addEventListener('click', () => {
+        if (!context) {
+             alert("Aguarde o carregamento do som para reproduzir.");
+             return;
+        }
         if (currentSequence.length > 0) {
             playSequence(currentSequence);
         } else {
@@ -353,6 +444,10 @@ function setupMusicControls() {
     
     // 4. Listener de Tocar Música Selecionada
     playMusicButton.addEventListener('click', () => {
+        if (!context) {
+             alert("Aguarde o carregamento do som para reproduzir.");
+             return;
+        }
         const selectedMusicName = musicSelect.value;
         if (selectedMusicName && MUSICAS[selectedMusicName]) {
             playSequence(MUSICAS[selectedMusicName]);
@@ -363,110 +458,17 @@ function setupMusicControls() {
 }
 
 
-function playSequence(sequence) {
-    if (playbackTimeout) {
-        clearTimeout(playbackTimeout);
-        playbackIndex = 0;
-    }
-    
-    const sequenceTrack = document.getElementById('sequenceTrack');
-    sequenceTrack.innerHTML = '';
-    
-    // Renderiza a sequência no leitor antes de começar a tocar
-    sequence.forEach(item => {
-        updateSequenceReader(item.note, item.duration, false);
-    });
-
-    playbackIndex = 0;
-
-    function playNextNote() {
-        if (playbackIndex >= sequence.length) {
-            // Fim da sequência
-            document.querySelectorAll('.sequence-item').forEach(item => item.classList.remove('active'));
-            playbackTimeout = null;
-            return;
-        }
-
-        const item = sequence[playbackIndex];
-        const delay = item.duration; // Milissegundos
-
-        // Remove o destaque do item anterior
-        const prevItem = sequenceTrack.children[playbackIndex - 1];
-        if (prevItem) {
-            prevItem.classList.remove('active');
-        }
-
-        // Adiciona o destaque ao item atual
-        const currentItemElement = sequenceTrack.children[playbackIndex];
-        if (currentItemElement) {
-            currentItemElement.classList.add('active');
-            
-            // Auto-scroll para seguir a nota
-            const reader = document.getElementById('sequenceReader');
-            reader.scrollLeft = currentItemElement.offsetLeft - reader.clientWidth / 2 + currentItemElement.clientWidth / 2;
-        }
-
-        // Toca a nota, mas não registra novamente
-        if (item.note !== '---') {
-             // Simula o clique no piano virtual para destacar a tecla.
-             const keyElement = document.querySelector(`[data-note="${item.note}"]`);
-             if (keyElement) { keyElement.classList.add('active'); }
-             playNote(item.note, keyElement); // O playNote vai desativar a tecla.
-        }
-        
-        playbackIndex++;
-        playbackTimeout = setTimeout(playNextNote, delay);
-    }
-    
-    // Inicia a primeira nota sem delay (pois o primeiro item tem duração 0 ou é o placeholder)
-    playNextNote();
-}
-
-// === FUNÇÕES DE DISPLAY E FEEDBACK ===
-
-function updateDisplay(note, frequency = "0.00") {
-    document.getElementById('current-note').textContent = note;
-    document.getElementById('current-frequency').textContent = frequency + ' Hz';
-}
-
-function updateSequenceReader(note, duration, clearBefore = false) {
-    const sequenceTrack = document.getElementById('sequenceTrack');
-    
-    if (clearBefore) {
-        // Se estiver gravando, limpa apenas a primeira vez
-        if (sequenceTrack.children.length === 0) {
-            sequenceTrack.innerHTML = '';
-        }
-    }
-
-    const item = document.createElement('div');
-    item.className = 'sequence-item';
-    item.textContent = `${note}`;
-    item.title = `Duração: ${duration}ms`;
-    
-    // Define a largura do item baseado na duração
-    // Duração mínima visível: 30px (100ms)
-    // Duração de 1s (1000ms) = 100px
-    const minWidth = 30;
-    const width = Math.max(minWidth, duration / 10); 
-    item.style.width = `${width}px`;
-
-    sequenceTrack.appendChild(item);
-    
-    // Faz o scroll automático para o final da gravação
-    if (recording) {
-        const reader = document.getElementById('sequenceReader');
-        reader.scrollLeft = reader.scrollWidth;
-    }
-}
-
-
 // === INICIALIZAÇÃO ===
 document.addEventListener('DOMContentLoaded', () => {
     
+    // CORREÇÃO CRÍTICA: Chama renderPiano() imediatamente para garantir a exibição do teclado.
+    renderPiano(); 
+    
     loadBaseNote().then(() => {
+        // Inicializa o display e os controles de música após o carregamento do áudio
         const initialNote = keyMap.z;
         updateDisplay(initialNote, getFrequency(initialNote).toFixed(2));
+        setupMusicControls();
     });
     
     // Listeners do teclado físico
