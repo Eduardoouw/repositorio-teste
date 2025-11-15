@@ -3,223 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piano Virtual - 36 Teclas</title>
+    <title>Piano Virtual - Essencial</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-<!-- LOGIN MODAL -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Login</h2>
-            <form id="loginForm">
-                <input type="email" placeholder="Email" id="loginEmail" required>
-                <input type="password" placeholder="Senha" id="loginPassword" required>
-                <button type="submit">Entrar</button>
-            </form>
-            <p id="loginError" style="color: #e74c3c; margin-top: 10px; display: none;">Email ou senha incorretos!</p>
-        </div>
-    </div>
-    <!-- LOGIN MODAL -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Login</h2>
-            <form id="loginForm">
-                <input type="text" placeholder="Nome" id="loginName" required>
-                <input type="email" placeholder="Email" id="loginEmail" required>
-                <input type="password" placeholder="Senha" id="loginPassword" required>
-                <button type="submit">Entrar</button>
-            </form>
-             <p class="login-link">
-                Não tem uma conta? <a href="cadastro.html#">Faça Login</a>
-            </p>
-            <p id="loginError" style="color: #e74c3c; margin-top: 10px; display: none;">Email ou senha incorretos!</p>
-        </div>
-    </div>
 
-    <!-- USER INFO -->
-    <div class="user-info" id="userInfo" style="display: none;">
-        <span id="userEmailDisplay"></span>
-        <button id="updateProfileBtn" class="action-button small-button" title="Atualizar Dados"><i class="fas fa-user-edit"></i></button>
-        <button id="logoutBtn" class="action-button small-button">Sair</button>
-    </div>
-<!-- notas a serem dispostas -->
     <div class="note-display">
         <span id="current-note">C1</span>
-        <span id="current-frequency">32.70 Hz</span>
+        <span id="current-frequency">0.00 Hz</span>
+    </div>
+
+    <div class="controls-container">
+        <button id="recordButton" class="action-button"><i class="fas fa-circle"></i> Record Gravar</button>
+        <button id="playButton" class="action-button" disabled><i class="fas fa-play"></i> Play Tocar</button>
+        <button id="downloadButton" class="action-button" disabled><i class="fas fa-download"></i> Download Baixar</button>
+        <button id="clearSequence" class="action-button"><i class="fas fa-trash-alt"></i> Limpar</button>
     </div>
 
     <div class="music-selector">
-        <label for="musicSelect" style="background: brown;padding: 6px;border-radius: 8px;">Música:</label>
         <select id="musicSelect">
-            <option value="">Selecione uma música...</option>
-        </select>
-        <button id="clearSequence">Limpar Seleção</button>
+            <option value="0">Selecione uma música...</option>
+            </select>
+        <button id="playMusicButton" class="action-button small-button"><i class="fas fa-guitar"></i> Tocar Música</button>
     </div>
 
     <div class="sequence-reader" id="sequenceReader">
-        <div class="sequence-track" id="sequenceTrack"></div>
-        <div class="sequence-pointer" id="sequencePointer"></div>
+        <div class="sequence-track" id="sequenceTrack">
+            </div>
+    </div>
+    
+    <div class="piano-controls-bottom">
+        
+        <div class="octave-control">
+            <label for="octaveShift">Oitava Base:</label>
+            <select id="octaveShift">
+                <option value="-2">C1</option>
+                <option value="-1">C2</option>
+                <option value="0" selected>C3</option>
+                <option value="1">C4</option>
+                <option value="2">C5</option>
+                <option value="3">C6</option>
+            </select>
         </div>
 
-    <div class="controls-container">
-        <button id="playMusicButton">Music Tocar Música</button> 
+        <div class="volume-control">
+            <label for="globalVolume">Volume:</label>
+            <input type="range" id="globalVolume" min="0" max="100" value="70">
+        </div>
     </div>
-
+    
     <div class="piano-container">
-        <div class="piano" id="piano"></div>
-    </div>
-
-    <!-- MENU HAMBÚRGUER -->
-    <div class="menu-button" id="menuButton">
-        <span></span><span></span><span></span>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3>Menu</h3>
-            <button class="close-sidebar" id="closeSidebar">×</button>
-        </div>
-        <ul class="sidebar-menu">
-            <li><button data-modal="modal1">Teclas</button></li>
-            <li><button data-modal="modal2">Qualidade de Som</button></li>
-            <li><button data-modal="modal3">Configurações</button></li>
-            <li><button data-modal="modalSobreSite">Sobre o Site</button></li>
-            <li><button data-modal="modalSobreDev">Sobre os Devs</button></li>
-            <li><button data-modal="modal5">Ajuda</button></li>
-            <li><button data-modal="updateProfileModal">Atualizar dados</button></li>
-
-        </ul>
-        <div class="sidebar-social">
-            <p><strong>Contato:</strong></p>
-            <p><i class="fas fa-envelope"></i> contato@pianovirtual.com</p>
-            <p><i class="fas fa-phone"></i> (11) 99999-9999</p>
-            <div class="social-links">
-                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-                <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+        <div class="piano" id="piano">
             </div>
-        </div>
-    </div>
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- MODAIS NORMAIS -->
-    <div class="modal" id="modal1">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Teclas do Teclado</h2>
-            <div style="text-align:left; line-height:2;">
-                <strong>Brancas:</strong> a s d f g h j → C4-B4 | z x c v b n m → C3-B3 | q w e r t y u → C5-B5<br><br>
-                <strong>Pretas:</strong> Shift + tecla (ex: ! = C#4)
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="modal2">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Qualidade de Som</h2>
-            <p>Som real de piano acústico profissional<br>Boost automático nas graves (+50%)<br>Fade-out suave de 1.5s</p>
-        </div>
-    </div>
-
-    <div class="modal" id="modal3">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Configurações</h2>
-            <p>Em desenvolvimento...</p>
-        </div>
-    </div>
-
-    <div class="modal" id="modalSobreSite">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Sobre o Site</h2>
-            <p>Piano Virtual completo, offline, com músicas prontas e muito mais!</p>
-        </div>
-    </div>
-
-    <div class="modal" id="modalSobreDev">
-        <div class="modal-content dev-modal">
-            <span class="close">×</span>
-            <h2>Sobre os Devs</h2>
-            <p>Feito com carinho por apaixonados por música e código</p>
-        </div>
-    </div>
-
-    <!-- MODAL AJUDA - CHAT COM NUVENS -->
-    <div class="modal" id="modal5">
-        <div class="modal-content chat-modal">
-            <span class="close">×</span>
-            
-            <div class="cloud cloud-1"></div>
-            <div class="cloud cloud-2"></div>
-            <div class="cloud cloud-3"></div>
-
-            <div class="chat-container">
-                <h1>Chat de Assistência</h1>
-                <div class="conversation-display" id="conversation-display">
-                    <div class="message bot-message">Olá! Como posso te ajudar hoje? <span style="font-size:0.8em">♫</span></div>
-                </div>
-                <div class="choices-area" id="choices-area"></div>
-                <button class="action-button" id="restart-button">Reiniciar Conversa</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="updateProfileModal">
-        <div class="modal-content registration-card">
-            <span class="close">×</span>
-            <h2>Atualizar Perfil</h2>
-            <form id="updateProfileForm">
-                
-                <div class="profile-picture-upload">
-                    <div class="profile-pic-preview" id="updateProfilePicPreview">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <input type="file" id="updateProfilePicInput" accept="image/*" style="display: none;">
-                    <button type="button" id="selectUpdateProfilePicBtn" class="upload-btn">Escolher Foto</button>
-                </div>
-                
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="updateName" placeholder="Novo Nome/Apelido" required>
-                </div>
-
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="updateEmail" placeholder="Email" required > 
-                </div>
-                
-                <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-                
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="updateOldPassword" placeholder="Senha Atual (obrigatório)" required>
-                </div>
-
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="updateNewPassword" placeholder="Nova Senha (opcional)">
-                </div>
-
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="updateConfirmNewPassword" placeholder="Confirmar Nova Senha">
-                </div>
-                
-                <p id="updateProfileError" style="color: #e74c3c; margin-top: 10px; display: none;"></p>
-                <p id="updateProfileSuccess" style="color: #2ecc71; margin-top: 10px; display: none;"></p>
-
-                <button type="submit" id="saveProfileBtn">Salvar Alterações</button>
-            </form>
-        </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
