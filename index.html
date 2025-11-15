@@ -3,29 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piano Virtual - Essencial</title>
+    <title>Piano Virtual - 36 Teclas</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
     <div class="note-display">
-        <span id="current-note">C1</span>
+        <span id="current-note">C3</span>
         <span id="current-frequency">0.00 Hz</span>
     </div>
-
+    
     <div class="controls-container">
-        <button id="recordButton" class="action-button"><i class="fas fa-circle"></i> Record Gravar</button>
-        <button id="playButton" class="action-button" disabled><i class="fas fa-play"></i> Play Tocar</button>
-        <button id="downloadButton" class="action-button" disabled><i class="fas fa-download"></i> Download Baixar</button>
-        <button id="clearSequence" class="action-button"><i class="fas fa-trash-alt"></i> Limpar</button>
-    </div>
+        
+        <div class="music-selector">
+            <select id="musicSelect">
+                <option value="" disabled selected>Selecionar Música</option>
+                </select>
+            <button class="action-button" id="playMusicButton" title="Tocar Música Selecionada">
+                <i class="fas fa-play"></i> Tocar Música
+            </button>
+        </div>
+        
+        <div class="sequence-controls">
+            <button class="action-button" id="recordButton" title="Gravar Sequência">
+                <i class="fas fa-circle"></i> Gravar
+            </button>
+            <button class="action-button" id="playSequenceButton" title="Tocar Sequência Gravada">
+                <i class="fas fa-play"></i> Tocar
+            </button>
+            </div>
 
-    <div class="music-selector">
-        <select id="musicSelect">
-            <option value="0">Selecione uma música...</option>
-            </select>
-        <button id="playMusicButton" class="action-button small-button"><i class="fas fa-guitar"></i> Tocar Música</button>
     </div>
 
     <div class="sequence-reader" id="sequenceReader">
@@ -33,31 +41,11 @@
             </div>
     </div>
     
-    <div class="piano-controls-bottom">
-        
-        <div class="octave-control">
-            <label for="octaveShift">Oitava Base:</label>
-            <select id="octaveShift">
-                <option value="-2">C1</option>
-                <option value="-1">C2</option>
-                <option value="0" selected>C3</option>
-                <option value="1">C4</option>
-                <option value="2">C5</option>
-                <option value="3">C6</option>
-            </select>
-        </div>
-
-        <div class="volume-control">
-            <label for="globalVolume">Volume:</label>
-            <input type="range" id="globalVolume" min="0" max="100" value="70">
-        </div>
-    </div>
-    
     <div class="piano-container">
         <div class="piano" id="piano">
             </div>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
