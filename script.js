@@ -931,3 +931,48 @@ if (updateProfileForm) {
         }
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// === INICIALIZAÇÃO ===
+document.addEventListener('DOMContentLoaded', () => {
+    renderPiano();
+    updateDisplay('C1');
+    setupMusicControls();
+
+    // LOGIN
+    document.getElementById('loginModal').classList.add('open');
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const user = USERS.find(u => u.email === email && u.password === password);
+        if (user) {
+            document.getElementById('loginModal').classList.remove('open');
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('userEmailDisplay').textContent = user.name;
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        document.getElementById('userInfo').style.display = 'none';
+        document.getElementById('loginModal').classList.add('open');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').style.display = 'none';
+    });
