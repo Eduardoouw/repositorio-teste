@@ -5,11 +5,8 @@ const globalVolume = 0.7; // Volume fixo
 const currentOctaveShift = 0; // Oitava fixa
 
 // === BANCO DE SONS (SIMULANDO API DE AMOSTRAS) ===
-// Usamos a base de amostras gratuitas hospedadas em um CDN.
-const SAMPLE_BASE_URL = 'https://tonejs.github.io/audio/salamander/'; 
-
-// Notas de amostra que serão carregadas. O Tone.js preenche as lacunas
-// usando o pitch shifting de notas próximas, mas com alta qualidade.
+// NOVO: URL base para carregar os arquivos de áudio (a "API" de sons)
+**const SAMPLE_BASE_URL = 'https://tonejs.github.io/audio/salamander/';** // Notas de amostra que serão carregadas.
 const SAMPLES_TO_LOAD = {
     'C4': 'C4.mp3',
     'F4': 'F4.mp3',
@@ -17,6 +14,8 @@ const SAMPLES_TO_LOAD = {
     'F5': 'F5.mp3',
     'C6': 'C6.mp3'
 };
+
+// ... (Resto do script.js, incluindo a lógica de Gravação e Mapeamento) ...
 
 // === LÓGICA DE SEQUÊNCIA E GRAVAÇÃO (MANTIDA) ===
 let currentSequence = []; 
@@ -459,3 +458,4 @@ document.addEventListener('DOMContentLoaded', () => {
         handleKeyUp(e.key);
     });
 });
+
