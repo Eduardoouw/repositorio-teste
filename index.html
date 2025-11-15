@@ -8,7 +8,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-
+<!-- LOGIN MODAL -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="email" placeholder="Email" id="loginEmail" required>
+                <input type="password" placeholder="Senha" id="loginPassword" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p id="loginError" style="color: #e74c3c; margin-top: 10px; display: none;">Email ou senha incorretos!</p>
+        </div>
+    </div>
     <!-- LOGIN MODAL -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
@@ -210,3 +222,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
