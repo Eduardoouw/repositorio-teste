@@ -6,7 +6,7 @@
     <title>Piano Virtual - 36 Teclas</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
+    </head>
 <body>
 
     <div class="note-display">
@@ -15,11 +15,10 @@
     </div>
     
     <div class="controls-container">
-        
         <div class="music-selector">
             <select id="musicSelect">
                 <option value="" disabled selected>Selecionar Música</option>
-                </select>
+            </select>
             <button class="action-button" id="playMusicButton" title="Tocar Música Selecionada">
                 <i class="fas fa-play"></i> Tocar Música
             </button>
@@ -32,20 +31,21 @@
             <button class="action-button" id="playSequenceButton" title="Tocar Sequência Gravada">
                 <i class="fas fa-play"></i> Tocar
             </button>
-            </div>
-
+        </div>
     </div>
 
     <div class="sequence-reader" id="sequenceReader">
         <div class="sequence-track" id="sequenceTrack">
-            </div>
+        </div>
     </div>
     
     <div class="piano-container">
         <div class="piano" id="piano">
-            </div>
+        </div>
     </div>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script> 
+
     <script src="script.js"></script>
 </body>
 </html>
